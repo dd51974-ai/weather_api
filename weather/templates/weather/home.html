@@ -5,8 +5,19 @@
     <title>Home</title>
 </head>
 <body>
-<h1>{{ city }}</h1>
-<p>Temperature: {{ temp }}</p>
-<p>{{ desc }}</p>
+<h1>Weather APP</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="city" placeholder="Enter city">
+    <button type="submit">Serach</button>
+</form>
+
+{% if city %}
+    <h1>{{ city }}</h1>
+    <p>{{ country }}</p>
+    <p>Temperature: {{ temp }}</p>
+    <p>{{ desc }}</p>
+{% endif %}
+
 </body>
 </html>
