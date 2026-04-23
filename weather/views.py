@@ -3,30 +3,34 @@ from django.shortcuts import render
 
 # Create your views here.
 def home(request):
-    city = None
     context = {}
 
-    if request.method == "POST":  # When formed to type city somewher.
-        city = request.POST['city']  # Enter to type city
-        api_key = "bdfd8d2deca36550b33f7c3dcd280007"
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-        response = requests.get(url)
-        data = response.json()  # Get data of json
+    if request.method == 'POST': # When user submits the form
+        city = request.POST.get('city')
 
-        print("STATUS:", response.status_code)
-        print("TEXT:", response.text)
+        if not city:
+            context["error"] = "Please type a city name"
+        else:
+            api_key = ""
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
-        if response.status_code == 200:  # Result after being post
-            context = {
-                "country": data["sys"]["country"],
-                "city": data["name"],
-                "temp": data["main"]["temp"],
-                "desc": data["weather"][0]["description"],
-            }
-        else: # spelling mistake
-            context = {
-                "error": "City not found"
-            }
+            try:
+                response = requests.get(url)
+                data = response.json()
 
+                print("STATUS:", response.status_code) # Debug
+                print("TEXT", response.text)
 
-    return render(request, "weather/home.html", context) # Return to "home.html" as a result
+                if response.status_code == 200:
+                    context = {
+                        "city": data.get("name"),
+                        "temp": data.get("main", {}).get("temp"),
+                        "desc": data.get("weather", [{}])[0].get("description"),
+                    }
+                else:
+                    context["error"] = "City not found"
+            except requests.exceptions.RequestException:
+                context["error"] = "API request failed"
+
+    return render(request, "weather/home.html", context)
+
