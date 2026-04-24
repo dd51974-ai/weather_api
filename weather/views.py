@@ -11,7 +11,7 @@ def home(request):
         if not city:
             context["error"] = "Please type a city name"
         else:
-            api_key = ""
+            api_key = "bdfd8d2deca36550b33f7c3dcd280007"
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
             try:
@@ -23,9 +23,11 @@ def home(request):
 
                 if response.status_code == 200:
                     context = {
-                        "city": data.get("name"),
+                        "city": data.get("sys").get("name"),
+                        "country": data.get("name"),
                         "temp": data.get("main", {}).get("temp"),
                         "desc": data.get("weather", [{}])[0].get("description"),
+                        "icon": data.get("weather",[{}])[0].get("icon"), # Weather icon
                     }
                 else:
                     context["error"] = "City not found"
@@ -33,4 +35,5 @@ def home(request):
                 context["error"] = "API request failed"
 
     return render(request, "weather/home.html", context)
+
 
