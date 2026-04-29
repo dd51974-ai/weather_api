@@ -12,13 +12,13 @@
     <button type="submit">Serach</button>
 </form>
 
-{% if city %}
+{% if icon %}
     <h1>{{ city }}</h1>
-    <p>{{ icon }}</p>
     <p>{{ country }}</p>
     <p>Temperature: {{ temp }}</p>
     <p>{{ desc }}</p>
-    <img src="http://openweathermap.org/img/wn/{{ icon }} @2x.png" alt="weather icon">
+    <p>{{ humidity }}%</p>
+    <img src="http://openweathermap.org/img/wn/{{ icon }}@2x.png" alt="weather icon">
 {% endif %}
 
 </body>

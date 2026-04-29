@@ -23,9 +23,10 @@ def home(request):
 
                 if response.status_code == 200:
                     context = {
-                        "city": data.get("sys").get("name"),
+                        "city": data.get("name"),
                         "country": data.get("name"),
                         "temp": data.get("main", {}).get("temp"),
+                        "humidity": data.get("main", {}).get("humidity"),
                         "desc": data.get("weather", [{}])[0].get("description"),
                         "icon": data.get("weather",[{}])[0].get("icon"), # Weather icon
                     }
