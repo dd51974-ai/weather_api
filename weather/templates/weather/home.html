@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h1>Weather APP</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="city" placeholder="Enter city">
+    <button type="submit">Serach</button>
+</form>
+
+{% if icon %}
+    <h1>{{ city }}</h1>
+    <p>{{ country }}</p>
+    <p>Temperature: {{ temp }}</p>
+    <p>{{ desc }}</p>
+    <p>{{ humidity }}%</p>
+    <img src="http://openweathermap.org/img/wn/{{ icon }}@2x.png" alt="weather icon">
+{% endif %}
+
+</body>
+</html>

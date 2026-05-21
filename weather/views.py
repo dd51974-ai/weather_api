@@ -3,21 +3,38 @@ from django.shortcuts import render
 
 # Create your views here.
 def home(request):
-    api_key = "bdfd8d2deca36550b33f7c3dcd280007" # Your api_key
-    city = "Tokyo"
+    context = {}
 
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-    response = requests.get(url)
+    if request.method == 'POST': # When user submits the form
+        city = request.POST.get('city')
 
-    print("STATUS:", response.status_code)
-    print("TEXT:", response.text)
+        if not city:
+            context["error"] = "Please type a city name"
+        else:
+            api_key = "bdfd8d2deca36550b33f7c3dcd280007"
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
-    data = response.json() # Get data of json
+            try:
+                response = requests.get(url)
+                data = response.json()
 
-    context = {
-        "city": data["name"],
-        "temp": data["main"]["temp"],
-        "desc": data["weather"][0]["description"],
-    }
+                print("STATUS:", response.status_code) # Debug
+                print("TEXT", response.text)
+
+                if response.status_code == 200:
+                    context = {
+                        "city": data.get("name"),
+                        "country": data.get("name"),
+                        "temp": data.get("main", {}).get("temp"),
+                        "humidity": data.get("main", {}).get("humidity"),
+                        "desc": data.get("weather", [{}])[0].get("description"),
+                        "icon": data.get("weather",[{}])[0].get("icon"), # Weather icon
+                    }
+                else:
+                    context["error"] = "City not found"
+            except requests.exceptions.RequestException:
+                context["error"] = "API request failed"
 
     return render(request, "weather/home.html", context)
+
+
