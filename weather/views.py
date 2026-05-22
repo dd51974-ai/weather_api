@@ -1,4 +1,5 @@
 import requests
+import os
 from django.shortcuts import render
 
 # Create your views here.
@@ -11,7 +12,7 @@ def home(request):
         if not city:
             context["error"] = "Please type a city name"
         else:
-            api_key = "bdfd8d2deca36550b33f7c3dcd280007"
+            api_key = os.environ.get("OPENWEATHER_API_KEY")
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
             try:
@@ -24,7 +25,7 @@ def home(request):
                 if response.status_code == 200:
                     context = {
                         "city": data.get("name"),
-                        "country": data.get("name"),
+                        "country": data.get("sys", {}).get("country"), # For example "JP", "US"
                         "temp": data.get("main", {}).get("temp"),
                         "humidity": data.get("main", {}).get("humidity"),
                         "desc": data.get("weather", [{}])[0].get("description"),
