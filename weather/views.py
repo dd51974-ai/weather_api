@@ -1,6 +1,8 @@
 import requests
 import os
 from django.shortcuts import render
+from dotenv import load_dotenv
+load_dotenv()
 
 # Create your views here.
 def home(request):
@@ -13,7 +15,7 @@ def home(request):
             context["error"] = "Please type a city name"
         else:
             api_key = os.environ.get("OPENWEATHER_API_KEY")
-            url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+            url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
 
             try:
                 response = requests.get(url)
